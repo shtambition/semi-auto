@@ -1,0 +1,32 @@
+{
+    "version":1.0,
+    "product":{
+        "扩增子":{"环境因子分析":{"分期号":{"required":true,"type":"str"},
+                                "结果文件":{"required":true,"type":"str"},
+                                "上传分期":{"required":false,"type":"str"},
+                                "信息搜集表":{"required":false,"type":"str"}},
+                 "alpha分析":{"分期号":{"required":true,"type":"str"},
+                             "结果文件":{"required":true,"type":"str"},
+                             "上传分期":{"required":false,"type":"str"},
+                             "信息搜集表":{"required":false,"type":"str"}},
+                "alpha统计检验":{"分期号":{"required":true,"type":"str"},
+                             "结果文件":{"required":true,"type":"str"},
+                             "上传分期":{"required":false,"type":"str"},
+                             "信息搜集表":{"required":false,"type":"str"}}
+        },
+        "宏基因组":{
+
+        },
+        "单菌":{"单独用spade分析":{"分期号":{"required":true,"type":"str"},
+                                "测序数据":{"required":true,"type":"str"},
+                                "上传分期":{"required":false,"type":"str"},
+                                "信息搜集表":{"required":false,"type":"str"}}
+
+        },
+        "其它":{"释放全部数据":{"分期号":{"required":false,"type":"str"},
+                                "测序数据":{"required":false,"type":"str"},
+                                "上传分期":{"required":true,"type":"str"}
+
+        }}
+    }
+}

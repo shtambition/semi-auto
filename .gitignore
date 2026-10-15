@@ -1,0 +1,20 @@
+# 后台口令：绝对不要提交
+.admin-token
+
+# 自动备份与临时文件
+backups/
+semi-auto.json.bak
+semi-auto.json.tmp
+
+# 工作区数据（记忆、截图等）
+.workbuddy/
+
+# Python
+__pycache__/
+*.pyc
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

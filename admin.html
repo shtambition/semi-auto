@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>后台管理 · semi-auto 配置</title>
+<link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo logo-admin">SA</div>
+    <div>
+      <h1>后台管理</h1>
+      <p class="sub">semi-auto.json 配置编辑 · 仅授权人员可写入</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <span id="authBadge" class="badge badge-muted">未登录</span>
+    <a class="btn btn-ghost" href="./" target="_blank" rel="noopener">查看公开页面</a>
+    <button id="btnLogout" class="btn btn-mini" type="button" hidden>退出登录</button>
+  </div>
+</header>
+
+<!-- ===================== 登录 ===================== -->
+<section id="loginView" class="login-wrap" hidden>
+  <form id="loginForm" class="login-card" autocomplete="off">
+    <div class="lock-mark">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="4.5" y="10.5" width="15" height="10" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="15.4" r="1.5" fill="currentColor"/>
+      </svg>
+    </div>
+    <h2>此页面需要后台口令</h2>
+    <p class="hint">
+      口令在服务启动时打印在终端，也保存在项目根目录的 <code>.admin-token</code> 文件里。
+      直接使用启动日志中带 <code>?token=</code> 的后台直达链接可以免输入。
+    </p>
+    <input id="loginToken" class="input" type="password" placeholder="粘贴后台口令"
+           autocomplete="current-password" spellcheck="false">
+    <label class="opt-row login-remember">
+      <input id="optRemember" type="checkbox" checked>
+      <span>在本机记住 30 天</span>
+    </label>
+    <button class="btn btn-primary login-btn" type="submit">登录</button>
+    <p id="loginMsg" class="modal-msg"></p>
+  </form>
+</section>
+
+<!-- ===================== 静态部署（GitHub / Netlify） ===================== -->
+<section id="staticView" class="login-wrap" hidden>
+  <div class="login-card">
+    <div class="lock-mark lock-static">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.6 4.6 6.6v5.1c0 4.4 3.1 8.1 7.4 9.1 4.3-1 7.4-4.7 7.4-9.1V6.6L12 3.6Z"
+              fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="m9.1 12.1 2 2 3.8-3.9" fill="none" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>线上版为只读部署</h2>
+    <p class="hint">
+      当前站点是静态部署（Netlify / GitHub Pages），没有后端写入接口，所以不能在这里直接改配置。
+    </p>
+    <ol class="steps">
+      <li>打开仓库里的 <code>semi-auto.json</code></li>
+      <li>点铅笔图标编辑，改完提交到 <code>main</code> 分支</li>
+      <li>Netlify 会自动重新部署，约 30 秒后线上生效</li>
+    </ol>
+    <a id="lnkRepoFile" class="btn btn-primary login-btn" href="#" target="_blank" rel="noopener">在 GitHub 上编辑 semi-auto.json</a>
+    <p class="hint" id="repoHint"></p>
+    <p class="hint">
+      想用带口令的后台编辑器：在本机项目目录运行 <code>python server.py</code>，
+      打开 <code>http://127.0.0.1:8000/admin</code>。
+    </p>
+  </div>
+</section>
+
+<!-- ===================== 编辑器 ===================== -->
+<section id="editorView" class="admin-grid" hidden>
+
+  <div class="panel panel-grow">
+    <div class="panel-head">
+      <h2 class="panel-title">配置内容 · semi-auto.json</h2>
+      <div class="head-tools">
+        <span id="cfgStat" class="stat"></span>
+        <button id="btnFormat" class="btn btn-mini" type="button">格式化</button>
+        <button id="btnReload" class="btn btn-mini" type="button">重新载入</button>
+        <button id="btnSave" class="btn btn-primary btn-mini" type="button">保存并更新网站</button>
+      </div>
+    </div>
+    <p class="hint">
+      结构：<code>product → 产品 → 分析类型 → 字段 → {"required": true/false, "type": "str"}</code>。
+      字段可选扩展 <code>options</code>（枚举下拉）与 <code>note</code>（提示文案）。
+      保存后立即写入磁盘，公开页面 2 秒内自动刷新。
+    </p>
+    <textarea id="configJson" class="editor" spellcheck="false" placeholder="在此粘贴或编辑配置 JSON"></textarea>
+    <p id="saveMsg" class="modal-msg"></p>
+  </div>
+
+  <div class="panel panel-grow">
+    <div class="panel-head">
+      <h2 class="panel-title">历史备份</h2>
+      <div class="head-tools">
+        <button id="btnRefreshBak" class="btn btn-mini" type="button">刷新</button>
+      </div>
+    </div>
+    <p class="hint">每次保存前自动备份，最多保留 30 份。可载入到编辑器查看，或直接回滚。</p>
+    <div id="bakList" class="bak-list"></div>
+  </div>
+
+</section>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="./assets/admin.js"></script>
+</body>
+</html>

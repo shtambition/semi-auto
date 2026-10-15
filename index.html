@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分析配置生成器 · semi-auto</title>
+<link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">SA</div>
+    <div>
+      <h1>分析配置生成器</h1>
+      <p class="sub">semi-auto.json &rarr; 勾选分析类型 &rarr; 生成可直接粘贴的 JSON</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <span id="srcBadge" class="badge badge-muted" title="配置来源">读取中…</span>
+    <span id="syncBadge" class="badge badge-muted" title="配置同步状态">同步中…</span>
+    <button id="btnRefresh" class="btn btn-ghost" type="button">刷新配置</button>
+    <a id="lnkAdmin" class="btn btn-ghost" href="./admin.html" title="仅授权人员可编辑配置">后台管理</a>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ================= 左栏：选择 ================= -->
+  <section class="col col-left">
+    <div class="panel panel-grow panel-select">
+      <h2 class="panel-title">1 · 选择范围</h2>
+
+      <label class="field-label" for="inpSearch">搜索</label>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="inpSearch" class="input" type="search" placeholder="输入名称即时筛选，如：分期、alpha" autocomplete="off">
+        <button id="btnClearSearch" class="search-clear" type="button" title="清空">&times;</button>
+      </div>
+      <p class="hint" id="searchHint"></p>
+
+      <label class="field-label" for="selProduct">产品类别</label>
+      <select id="selProduct" class="select"><option value="">全部产品</option></select>
+
+      <label class="field-label" for="selAnalysis">分析类型</label>
+      <select id="selAnalysis" class="select"><option value="">全部分析类型</option></select>
+
+      <div class="results-head">
+        <span class="results-title">搜索结果 <span class="results-tip">勾选即加入</span></span>
+        <span id="listCount" class="stat"></span>
+      </div>
+      <div id="analysisList" class="checklist"></div>
+      <div id="checkedBar" class="checked-bar" hidden>
+        <span id="checkedInfo"></span>
+        <button id="btnUncheckAll" class="btn btn-mini" type="button">清空勾选</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 中栏：参数填写 ================= -->
+  <section class="col col-mid">
+    <div class="panel panel-grow">
+      <div class="panel-head">
+        <h2 class="panel-title">2 · 填写参数</h2>
+        <div class="head-tools">
+          <span id="fillStat" class="stat"></span>
+          <button id="btnClearValues" class="btn btn-mini" type="button">清空已填内容</button>
+        </div>
+      </div>
+      <div id="formArea" class="form-area"></div>
+    </div>
+  </section>
+
+  <!-- ================= 右栏：输出 ================= -->
+  <section class="col col-right">
+    <div class="panel panel-grow">
+      <div class="panel-head">
+        <h2 class="panel-title">3 · 生成 JSON</h2>
+        <div class="head-tools">
+          <button id="btnCopy" class="btn btn-primary btn-mini" type="button">复制</button>
+          <button id="btnDownload" class="btn btn-mini" type="button">下载 .json</button>
+        </div>
+      </div>
+
+      <label class="opt-row">
+        <input id="optGroup" type="checkbox">
+        <span>按 产品 / 分析类型 嵌套归组</span>
+      </label>
+      <label class="opt-row">
+        <input id="optSkipEmpty" type="checkbox">
+        <span>忽略未填写的字段</span>
+      </label>
+
+      <div id="validateBox" class="validate"></div>
+
+      <textarea id="outJson" class="out" spellcheck="false" readonly></textarea>
+      <p class="hint" id="outHint"></p>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="./assets/app.js"></script>
+</body>
+</html>

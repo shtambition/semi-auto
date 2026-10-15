@@ -1,0 +1,51 @@
+# Netlify 部署配置 —— 纯静态站点，无构建步骤
+#
+# 部署方式（二选一）：
+#   A. 在 Netlify 里 "Import from Git" 选中本仓库，配置会被自动读取，无需手工填任何项
+#   B. 手工配置时：Build command 留空，Publish directory 填 .
+#
+# 说明：
+#   本目录即站点根目录（index.html / admin.html / assets / semi-auto.json 都在这一层）。
+#   server.py 是本地开发用的后端，Netlify 上不会运行；线上页面会自动改为直接读取
+#   semi-auto.json 这个静态文件。要改配置，在 GitHub 上编辑 semi-auto.json 并提交，
+#   Netlify 会自动重新部署。
+
+[build]
+  publish = "."
+  command = ""
+
+# 站点根暴露的文件都做基础安全加固
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 配置文件不能长期缓存，否则改完 GitHub 刷新页面看不到新内容
+[[headers]]
+  for = "/semi-auto.json"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# 后台页：静态托管下没有 /admin 这个文件，需要重写路由
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/"
+  to = "/admin.html"
+  status = 200
+
+# 后端源码与本地专用文件不对外暴露
+[[redirects]]
+  from = "/server.py"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/backups/*"
+  to = "/404.html"
+  status = 404
